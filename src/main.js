@@ -1,6 +1,6 @@
 //入口文件
 
-import Vue from 'vue'
+import Vue from 'vue'   
 
 //导入App根组件
 import app from './App.vue'
