@@ -30,7 +30,18 @@ module.exports={
         rules:[
             {test:/\.css$/,use:['style-loader','css-loader']}, //css文件匹配规则
             { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] }, //sass文件匹配规则
-            {test:/\.(jpg|png|gif|bmp|jpeg)$/,use:'url-loader?limit=33497&name=[hash:8]-[name].[ext]'}, //处理图片url地址。
+            //{test:/\.(jpg|png|gif|bmp|jpeg)$/,use:'url-loader?limit=33497&name=[hash:8]-[name].[ext]'}, //处理图片url地址。
+            {test:/\.(jpg|png|gif|bmp|jpeg)$/, //处理图片url地址。
+                use: [{
+                  loader: 'url-loader',
+                  // loader: 'file-loader',
+                  options: {
+                    esModule: false, // 这里设置为false
+                    name: '[hash:8]-[name].[ext]',
+                    limit: 33497
+                  }
+                }]
+            },
             //图片小于或等于33497字节会被Base64编码，减少二次请求。规定打包后的图片url与打包前同名同后缀。通过哈希值区分开不同内容却同名的图片。
             {test:/\.(otf|ttf|eot|svg|woff|woff2)$/,use:'url-loader'},//处理字体图标
             {test:/\.js$/,use:'babel-loader',exclude:/node_modules/}, //将ES6高级语法转换为低级语法
