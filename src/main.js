@@ -40,8 +40,11 @@ import VueResource from 'vue-resource'
 //2.2安装 vue-resource
 Vue.use(VueResource)
 
-//全局配置请求根路径 老师的http://vue.studyit.io 用不了了，用我自己找的
+//全局配置 请求的根路径。 老师的http://vue.studyit.io 用不了了，用我自己找的
 Vue.http.options.root = 'http://www.liulongbin.top:3005'
+
+//全局配置 post时表单数据格式组织形式
+Vue.http.options.emulateJSON=true;
 
 
 //导入时间插件

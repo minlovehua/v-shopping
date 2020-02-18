@@ -2,8 +2,8 @@
     <div class="comment-container">
         <h3>发表评论</h3>
         <hr>
-        <textarea placeholder="请输入评论内容(最多输入120字)" maxlength="120"></textarea>
-        <mt-button type="primary" size="large">发表评论</mt-button>
+        <textarea placeholder="请输入评论内容(最多输入120字)" maxlength="120" v-model="msg"></textarea>
+        <mt-button type="primary" size="large" @click="postComment">发表评论</mt-button>
         <div class="comment-list">
             <div class="comment-item"  v-for="(item,i) in comments" :key="i">
                 <div class="comment-title">
@@ -14,7 +14,6 @@
         </div>
         <mt-button type="danger" size="large" plain @click="getMore">加载更多</mt-button>
     </div>
-
 </template>
 
 <script>
@@ -23,7 +22,8 @@ export default {
     data(){
         return {
             pageIndex:1, //默认展示第1页数据
-            comments:[]  //所有的评论数据
+            comments:[],  //所有的评论数据
+            msg:''  //评论框输入的内容
         };
     },
     created(){
@@ -46,6 +46,32 @@ export default {
         getMore(){ //加载更多评论
             this.pageIndex++;
             this.getComments();
+        },
+        postComment(){ //发表评论
+            //校验评论内容是否为空
+            if(this.msg.trim().length === 0){
+                return Toast("评论内容不能为空！");
+            }
+
+            //请求的url地址(完整)：http://www.liulongbin.top:3005/api/postcomment/:artid
+            //参数1：请求的url地址  api/postcomment/:artid
+            //参数2：提交给服务器的数据对象{content:this.msg}
+            //参数3：定义提交时候，表单中数据的格式 {emulateJSON:true} 
+            //每次发post请求都要{emulateJSON:true} 这样子指定很麻烦。可以在main.js中全局配置,而不在这里传参数3
+            //.trim() 去掉字符串首尾的空格
+            this.$http.post("api/postcomment/"+this.$route.params.id,{content:this.msg.trim()})
+            .then(function(result){
+                if(result.body.status === 0){
+                    //拼接处一个新评论的对象
+                    var newCommet = {
+                        user_name:"匿名用户",
+                        add_time:Date.now(),
+                        content:this.msg.trim()
+                    };
+                    this.comments.unshift(newCommet); //将新评论添加到评论数组开头
+                    this.msg = "";  //清空评论输入框
+                }
+            });
         }
     },
     props:["id"]  //显示定义一下id
