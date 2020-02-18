@@ -21,10 +21,11 @@ import router from './router.js'
 
 
 //按需导入MInt UI中的组件
-import {Header,Swipe, SwipeItem} from 'mint-ui'
+import {Header,Swipe, SwipeItem,Button} from 'mint-ui'
 Vue.component(Header.name,Header)
 Vue.component(Swipe.name, Swipe);
 Vue.component(SwipeItem.name, SwipeItem);
+Vue.component(Button.name, Button);
 
 
 //导入MUI的样式
@@ -34,11 +35,22 @@ import './lib/mui/css/mui.min.css'
 //导入mui的扩展图标样式
 import './lib/mui/css/icons-extra.css'
 
-
 //2.1导入 vue-resource 
 import VueResource from 'vue-resource'
 //2.2安装 vue-resource
 Vue.use(VueResource)
+
+//全局配置请求根路径 老师的http://vue.studyit.io 用不了了，用我自己找的
+Vue.http.options.root = 'http://www.liulongbin.top:3005'
+
+
+//导入时间插件
+import moment from 'moment' //它会自己到node_modules文件中找到刚刚cnpm install 好的 moment
+//定义全局过滤器
+Vue.filter('dateFormat',function(dataStr,pattern = "YYYY-MM-DD HH:mm:ss"){
+    //用现成的 Nodejs 里面的 moment
+    return moment(dataStr).format(pattern);
+})
 
 
 var vm = new Vue({

@@ -38,8 +38,9 @@
 </script>
 
 <style lang="scss" scoped>   //使用局部样式
-    .app-container{
+    .app-container{ //根组件容器div
         padding-top: 40px;
+		padding-bottom: 60px;
 		overflow-x: hidden; //实现 界面底部不出现滚动条
     }
 
