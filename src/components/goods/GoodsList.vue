@@ -1,5 +1,7 @@
 <template>
+    
     <div class="goods-list">
+        <!-- 商品列表 -->
         <div class="goods-item" v-for="item in goodslist" :key="item.id">
             <img :src="item.img_url" alt="">
             <h1 class="title">{{item.title}}</h1>
@@ -14,7 +16,11 @@
                 </p>
             </div>
         </div>
+
+        <!-- “加载更多” 按钮 -->
+        <mt-button type="danger" size="large" @click="getMore">加载更多</mt-button>
     </div>
+
 </template>
 <script>
     export default {
@@ -32,13 +38,21 @@
                 this.$http.get('api/getgoods?pageindex='+this.pageindex).then(result=>{
                     if(result.body.status === 0){
                         //将获取到的数据挂载到data上
-                        this.goodslist = result.body.message;
+                        //this.goodslist = result.body.message;
+
+                        //将获取到的数据拼接在旧数据后面，而不是覆盖旧数据
+                        this.goodslist=this.goodslist.concat(result.body.message);
                     }
                 })
+            },
+            getMore(){ //加载更多（加载下一页的内容）
+                this.pageindex++;
+                this.getGoodsList(); 
             }
         }
     }
 </script>
+
 <style lang="scss" scoped>
     .goods-list{
         display: flex; 
