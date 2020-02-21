@@ -20,12 +20,18 @@ Vue.use(VueRouter)
 import router from './router.js'
 
 
-//按需导入MInt UI中的组件
-import {Header,Swipe, SwipeItem,Button} from 'mint-ui'
-Vue.component(Header.name,Header)
-Vue.component(Swipe.name, Swipe);
-Vue.component(SwipeItem.name, SwipeItem);
-Vue.component(Button.name, Button);
+//按需导入Mint UI中的组件
+// import {Header,Swipe, SwipeItem,Button,Lazyload} from 'mint-ui'
+// Vue.component(Header.name,Header)
+// Vue.component(Swipe.name, Swipe);
+// Vue.component(SwipeItem.name, SwipeItem);
+// Vue.component(Button.name, Button);
+// Vue.use(Lazyload);
+
+//全部导入 Mint UI 
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI)
 
 
 //导入MUI的样式
@@ -54,6 +60,10 @@ Vue.filter('dateFormat',function(dataStr,pattern = "YYYY-MM-DD HH:mm:ss"){
     //用现成的 Nodejs 里面的 moment
     return moment(dataStr).format(pattern);
 })
+
+//安装图片预览插件
+import VuePreview from 'vue-preview'
+Vue.use(VuePreview)
 
 
 var vm = new Vue({

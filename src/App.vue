@@ -38,6 +38,11 @@
 </script>
 
 <style lang="scss" scoped>   //使用局部样式
+
+	.mint-header{
+		z-index: 99; //让Header在最上方，不会被其它元素遮挡
+	}
+
     .app-container{ //根组件容器div
         padding-top: 40px;
 		padding-bottom: 60px;

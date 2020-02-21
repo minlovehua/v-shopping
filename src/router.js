@@ -9,6 +9,8 @@ import shopcar from './components/tabbar/ShopcarContainer.vue'
 import NewsList from './components/news/NewsList.vue'
 import NewsInfo from './components/news/NewsInfo.vue'
 import PhotoList from './components/photos/PhotoList.vue'
+import PhotoInfo from './components/photos/PhotoInfo.vue'
+import GoodsList from './components/goods/GoodsList.vue'
 
 //5. 创建路由对象
 var router = new VueRouter({
@@ -20,7 +22,9 @@ var router = new VueRouter({
         {path:'/search',component:search},
         {path:'/home/newslist',component:NewsList},
         {path:'/home/newsinfo/:id',component:NewsInfo}, //id前面要有冒号:才能匹配到id的值
-        {path:'/home/photolist',component:PhotoList}
+        {path:'/home/photolist',component:PhotoList},
+        {path:'/home/photoinfo/:id',component:PhotoInfo},
+        {path:'/home/goodslist',component:GoodsList}
     ],
     //设置路由高亮显示
     linkActiveClass:'mui-active'  //覆盖默认的路由高亮类(router-link-active)
