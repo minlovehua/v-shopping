@@ -1,5 +1,15 @@
 <template>
     <div class="goodsinfo-container">
+
+        <!-- 半场动画不能用类，只能用构造函数  -->
+        <transition      
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @after-enter="afterEnter">
+            <div class="ball" v-show="ballFlag" ref="ball"></div>
+            <!-- 因为小球属于当前界面，所以在组件内容可以直接通过 ref 来获取到这个小球。 -->
+        </transition>
+
         <!-- 商品轮播图区域 -->
         <div class="mui-card">
             <div class="mui-card-content">
@@ -22,7 +32,7 @@
                     </p>
                     <p>
                         <mt-button type="primary" size="small">立即购买</mt-button>
-                        <mt-button type="danger" size="small">加入购物车</mt-button>
+                        <mt-button type="danger" size="small" @click="addToShopCar">加入购物车</mt-button>
                     </p>
                 </div>
             </div>
@@ -57,7 +67,8 @@
                 //将路由参数对象中的id挂载到data上，方便后期调用
                 id:this.$route.params.id, 
                 lunbotu:[], //轮播图数据 默认是一个空数组
-                goodsinfo:{} //商品信息数据 默认是一个空对象
+                goodsinfo:{}, //商品信息数据 默认是一个空对象
+                ballFlag:false //控制小球隐藏和显示的标识符，默认隐藏
             }
         },
         created(){
@@ -88,6 +99,30 @@
             },
             goComment(id){ //点击使用编程式导航跳转到评论页面
                 this.$router.push({name:"goodscomment",params:{id}})
+            },
+            addToShopCar(){ //点击“加入购物车”按钮，切换显示或隐藏小球
+                this.ballFlag = !this.ballFlag;
+            },
+            beforeEnter(el){
+                el.style.transfrom="translate(0,0)"; //一开始在原始位置
+            },
+            enter(el,done){
+                el.offsetWidth; //这行代码没有实际意义，如果不写，就没有动画效果
+
+                //获取小球在页面中的位置
+                const ballPosition = this.$refs.ball.getBoundingClientRect();
+                //获取徽标在页面中的位置
+                const badgePosition=document.getElementById("badge").getBoundingClientRect();
+                //小球到徽标的距离x轴方向距离和y轴方向距离
+                const xDist=badgePosition.left-ballPosition.left;
+                const yDist=badgePosition.top-ballPosition.top;
+
+                el.style.transform=`translate(${xDist}px,${yDist}px)`; //ES6的模板字符串
+                el.style.transition="all 1s cubic-bezier(0,0,.25,1)"; //cubic-bezier(0,0,.25,1)是个移动曲线
+                done() //这代表afterEnter(el){this.ballFlag = !this.ballFlag;}引用
+            },
+            afterEnter(el){
+                this.ballFlag = !this.ballFlag; //小球到达购物车之后，消失
             }
         },
         components:{ //2. 注册子组件
@@ -100,19 +135,29 @@
     .goodsinfo-container{
         background-color:#eee;
         overflow: hidden;
-
         .now_price{
             color:red;
             font-size:16px;
             font-weight:bold;
         }
-
         .mui-card-footer{
             display:block;
             button{
                 //上下10px,左右0px。让按钮之间有点间隙不至于紧挨在一起。
                 margin:15px 0; 
             }
+        }
+
+        .ball{
+            width: 15px;
+            height: 15px;
+            border-radius:50%;
+            background-color:pink;
+            
+            position: absolute;
+            z-index:99;
+            top:389px;
+            left:139px;
         }
     }
 </style>
