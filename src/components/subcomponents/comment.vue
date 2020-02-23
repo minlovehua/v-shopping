@@ -74,7 +74,7 @@ export default {
             });
         }
     },
-    props:["id"]  //显示定义一下id
+    props:["id"]  //props 是子组件拿取父组件数据的唯一通道
 }
 </script>
 
