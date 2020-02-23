@@ -1,11 +1,7 @@
 <template>
     <div>
-        <!-- 轮播图 -->
-        <mt-swipe :auto="4000">
-            <mt-swipe-item v-for="item in lunbotuList" :key="item.id">
-                <img v-bind:src="item.img" alt="找不到这张图片">  <!-- v-bind绑定的属性，对应的值要到vue数据里面找 -->
-            </mt-swipe-item>
-        </mt-swipe>
+        <!-- 3.使用轮播图子组件    轮播图   isfull属性，指定是否宽度为100%-->
+        <swiper :lunbotuList="lunbotuList" :isfull="true"></swiper>
 
         <!-- 9宫格 改造成 6宫格 --> 
         <ul class="mui-table-view mui-grid-view mui-grid-9">
@@ -40,6 +36,9 @@
 <script>
     import {Toast} from 'mint-ui'
 
+    //1.引入子组件
+    import swiper from '../subcomponents/swiper.vue'
+
     export default {  //export default {}    导出对象
         data(){
             return {
@@ -61,34 +60,14 @@
                     }
                 }).catch((e) => {});  
             }
+        },
+        components:{ //2.注册子组件 冒号前面是组件的名字，冒号后面是组件
+            swiper
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .mint-swipe{  //轮播图 样式
-        height: 200px;  //轮播图的高度
-
-        .mint-swipe-item{
-            &:nth-child(1){   //第一张轮播图 
-                background-color: pink
-            }
-
-            &:nth-child(2){   //第二张轮播图 
-                background-color: skyblue
-            }
-
-            &:nth-child(3){   //第三张轮播图 
-                background-color: plum
-            }
-
-            img{  //轮播图 图片缩放到刚刚好占满轮播图的容器
-                width: 100%;
-                height: 100%;
-            }
-        }
-    }
-
     .mui-grid-view.mui-grid-9{  //六宫格 ul的样式
         background-color:#fff;
         border: none;

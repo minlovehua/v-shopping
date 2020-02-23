@@ -10,6 +10,7 @@
         <hr>
         <!-- 内容取 -->
         <div class="content" v-html="newsinfo.content"></div>
+        
         <!-- 评论区  3.使用子组件 -->
         <comment-box :id="this.id"></comment-box>   
         <!-- 属性绑定id ，因为在获取评论数据时要用到它-->
