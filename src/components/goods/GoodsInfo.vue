@@ -28,7 +28,7 @@
                     <p class="price">
                         市场价:<del>{{goodsinfo.market_price}}元</del>&nbsp;&nbsp;
                         销售价:<span class="now_price">{{goodsinfo.sell_price}}元</span>
-                        <p>购买数量:<numbox></numbox></p>
+                        <p>购买数量:<numbox :max="goodsinfo.stock_quantity" @getcount="getSelectedCount"></numbox></p>
                     </p>
                     <p>
                         <mt-button type="primary" size="small">立即购买</mt-button>
@@ -68,10 +68,11 @@
                 id:this.$route.params.id, 
                 lunbotu:[], //轮播图数据 默认是一个空数组
                 goodsinfo:{}, //商品信息数据 默认是一个空对象
-                ballFlag:false //控制小球隐藏和显示的标识符，默认隐藏
+                ballFlag:false, //控制小球隐藏和显示的标识符，默认隐藏
+                selectedCount:1 //购买数量 默认为1
             }
         },
-        created(){
+        created(){ //实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始编译模板。
             this.getLunbotu(); //组件一旦创建，就获取轮播图数据
             this.getGoodsInfo(); //组件一旦创建，就获取商品详情的数据
         },
@@ -123,6 +124,11 @@
             },
             afterEnter(el){
                 this.ballFlag = !this.ballFlag; //小球到达购物车之后，消失
+            },
+            getSelectedCount(count){  //获取购买数量
+                //当子组件把选中的数量传递给父组件的时候，把选中的值保存到data上。
+                this.selectedCount = count;
+                console.log('父组件拿到的子组件传递过来的数据：'+this.selectedCount);
             }
         },
         components:{ //2. 注册子组件
