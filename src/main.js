@@ -1,10 +1,59 @@
 //入口文件
 
-
-
 //导入vue  
 //(通过npm下载的包在node_modules，import Vue from 'vue' 会自动去node_modules中去找vue这个包)
 import Vue from 'vue'
+
+//注册 vuex
+import Vuex from 'vuex'
+Vue.use(Vuex)
+//每次进入网站，肯定会调用main.js，在刚调用的时候，先从本地存储中把购物车的数据拿出来，放到store中。
+var car = JSON.parse(localStorage.getItem('car')||'[]')
+var store = new Vuex.Store({
+    state:{                 //获取state中数据的方式 this.$store.state.xxx
+        //car:[],           //购物者中商品的数据用一个数组存储。在car数组里存储商品对象。
+        car:car             //商品对象：{id:商品id,count:购买数量,price:商品单价,selected:是否选中进行结算}
+    },
+    mutations:{                                              //在mutations中操作state中的数据  
+        addToCar(state,goodsinfo){                           //点击“加入购物车”，把商品信息保存到store中的car数组里                  
+            var flag = false                                 //假设在购物车中没有找到该商品 flag=false
+            state.car.some(item=>{                           //如果购物车中已经存在此商品，则直接更新数量。
+                if(item.id == goodsinfo.id){
+                    item.count += parseInt(goodsinfo.count)
+                    flag = true                              //找到了该商品 flag=true
+                    return true                              //终止后续的some循环
+                }
+            })
+
+            if(!flag){                                       //即 flag === false ，在car数组中没有找到该商品,
+                state.car.push(goodsinfo)                    //则将商品push到car数组中
+            }
+
+            //当更新了car之后，把car数组存储到本地的localStorage中。
+            localStorage.setItem('car',JSON.stringify(state.car))
+        }
+    },
+    getters:{      //获取getters提供的数据的方式 this.$store.getters.xxx
+        /* 我的实现
+        sumCount:function(state){
+            var sum = 0;
+            state.car.forEach(item=>{
+                sum += parseInt(item.count)
+            })
+            return sum;
+        }*/
+
+        //老师的实现
+        getAllCount(state){
+            var c = 0;
+            state.car.forEach(item=>{
+                c += item.count
+            })
+            return c
+        }
+    }
+})
+
 
 
 //导入App根组件
@@ -69,7 +118,8 @@ Vue.use(VuePreview)
 var vm = new Vue({
     el:'#haha',
     render:c=>c(app),
-    router //挂载路由对象到VM实例
+    router, //挂载路由对象到VM实例
+    store   //挂载store状态管理对象到VM实例
 })
 
 

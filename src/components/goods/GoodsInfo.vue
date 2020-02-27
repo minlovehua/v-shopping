@@ -65,7 +65,7 @@
         data(){
             return{
                 //将路由参数对象中的id挂载到data上，方便后期调用
-                id:this.$route.params.id, 
+                id:this.$route.params.id,  //商品的id
                 lunbotu:[], //轮播图数据 默认是一个空数组
                 goodsinfo:{}, //商品信息数据 默认是一个空对象
                 ballFlag:false, //控制小球隐藏和显示的标识符，默认隐藏
@@ -91,6 +91,7 @@
             getGoodsInfo(){ //获取轮播图信息
                 this.$http.get('api/goods/getinfo/'+this.id).then(result=>{
                     if(result.body.status === 0){
+                        console.log(result.body); //打印获取到的数据看看
                         this.goodsinfo = result.body.message[0];
                     }
                 })
@@ -101,11 +102,25 @@
             goComment(id){ //点击使用编程式导航跳转到评论页面
                 this.$router.push({name:"goodscomment",params:{id}})
             },
-            addToShopCar(){ //点击“加入购物车”按钮，切换显示或隐藏小球
+            addToShopCar(){ 
+                //点击“加入购物车”按钮，切换显示或隐藏小球
                 this.ballFlag = !this.ballFlag;
+
+                // 商品对象 {id:商品id,count:购买数量,price:商品单价,selected:是否选中进行结算}
+                // 要保存到store中的car数组中 商品对象
+                var goodsinfo = {
+                    id:this.id,
+                    count:this.selectedCount,
+                    price:this.goodsinfo.sell_price,
+                    selected:true
+                }
+
+                //调用mutations中的方法的方式 this.$store.commit('方法的名字','按需传递的参数')
+                //调用store中mutations的addToCar方法来将商品加入购物车（即修改store中商品的数据）
+                this.$store.commit('addToCar',goodsinfo)
             },
             beforeEnter(el){
-                el.style.transfrom="translate(0,0)"; //一开始在原始位置
+                el.style.transform="translate(0,0)"; //一开始在原始位置
             },
             enter(el,done){
                 el.offsetWidth; //这行代码没有实际意义，如果不写，就没有动画效果
