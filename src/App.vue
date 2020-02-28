@@ -1,7 +1,11 @@
 <template>
     <div class="app-container">
         <!-- 顶部Header区域 -->
-        <mt-header fixed title="Vue商城"></mt-header>
+        <mt-header fixed title="Vue商城">
+			<span slot="left" @click="goBack" v-show="flag">
+				<mt-button icon="back">返回</mt-button>
+			</span>
+		</mt-header>
 
         <!-- 中间的路由 router-view 区 -->
 		<!-- 用来放对应组件到的“坑”，点击路由链接，改路由链接对应的组件会在这里显示-->
@@ -36,7 +40,30 @@
 </template>
 
 <script>
-
+	export default{
+		data(){
+			return {
+				flag:false  //默认为 false
+			}
+		},
+		created(){ //created钩子函数：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板。
+			this.flag = this.$route.path === "/home" ? false : true;
+		},
+		methods:{
+			goBack(){ //点击后退(返回)
+				this.$router.go(-1)
+			}
+		},
+		watch:{ //实时监听url地址中的$route.path，如果是首页(/home),隐藏“返回”按钮
+			"$route.path":function(newVal){
+				if(newVal === "/home"){
+					this.flag = false
+				}else{
+					this.flag = true
+				}
+			}
+		}
+	}
 </script>
 
 <style lang="scss" scoped>   //使用局部样式

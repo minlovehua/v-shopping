@@ -24,17 +24,47 @@ var store = new Vuex.Store({
                     return true                              //终止后续的some循环
                 }
             })
-
             if(!flag){                                       //即 flag === false ，在car数组中没有找到该商品,
                 state.car.push(goodsinfo)                    //则将商品push到car数组中
             }
-
+            //当更新了car之后，把car数组存储到本地的localStorage中。
+            localStorage.setItem('car',JSON.stringify(state.car))
+        },
+        updateGoodsInfo(state,goodsinfo){  //这里goodsinfo是调用者传递过来的参数 {id,count}
+            //修改购物车中商品的数量值
+            state.car.some(item=>{ 
+                //因为点击numbox的加减修改一个商品的数量时，这个numbox的文本框一旦改变，就会执行此方法，
+                //所以，此刻只涉及到一件商品的修改，所以只需要找到这个商品就可以终止循环了，所以用some不用forEach。
+                if(item.id == goodsinfo.id){
+                    item.count = parseInt(goodsinfo.count)
+                    return true
+                }
+            })
+            //当更新了car之后，把car数组存储到本地的localStorage中。
+            localStorage.setItem('car',JSON.stringify(state.car))
+        },
+        removeFromCar(state,id){ //跟据id，从store中的购物车中删除对应的商品
+            state.car.some((item,i)=>{
+                if(item.id == id){
+                    state.car.splice(i,1); //从下标为i开始删，删除1个
+                    return true //终止循环
+                }
+            })
+            //当更新了car之后，把car数组存储到本地的localStorage中。
+            localStorage.setItem('car',JSON.stringify(state.car))
+        },
+        updateGoodsSelected(state,info){ //将选中状态同步到store中。info是调用者传递过来的数据 {id,selected} 。
+            state.car.some(item=>{
+                if(item.id == info.id){
+                    item.selected = info.selected;
+                }
+            })
             //当更新了car之后，把car数组存储到本地的localStorage中。
             localStorage.setItem('car',JSON.stringify(state.car))
         }
     },
     getters:{      //获取getters提供的数据的方式 this.$store.getters.xxx
-        /* 我的实现
+        /* 
         sumCount:function(state){
             var sum = 0;
             state.car.forEach(item=>{
@@ -43,14 +73,50 @@ var store = new Vuex.Store({
             return sum;
         }*/
 
-        //老师的实现
-        getAllCount(state){
+        getAllCount(state){ //计算购物车中所有物品的数量总和
             var c = 0;
             state.car.forEach(item=>{
                 c += item.count
             })
             return c
+        },
+        getGoodsCount(state){ //把当前循环到的商品的id作为对象的属性名，count作为对象的属性值
+            var o = {}
+            state.car.forEach(item=>{
+                o[item.id]=item.count;
+            })
+            return o
+        },
+        getGoodsSelected(state){ //把当前循环到的商品的id作为对象的属性名，选中状态selected作为对象的属性值
+            var o = {}
+            state.car.forEach(item=>{
+                o[item.id]=item.selected
+            })
+            return o
+        },
+        getGoodsCountAndAmount(state){ //计算购物车里勾选的总数量和总价格
+            var o = {
+                count:0, //勾选的数量
+                amount:0 //勾选的总价
+            }
+            state.car.forEach(item=>{
+                if(item.selected){ //只计算被选中的商品  item.selected == true时 
+                    o.count += item.count;
+                    o.amount += item.price*item.count;
+                }
+            })
+            return o
         }
+        
+        // getAllId(state){ //遍历store中car数组的每一项，并将id用逗号隔开拼接在一起
+        //     var id = '';
+        //     state.car.forEach(item=>{
+        //         id += item.id
+        //         id += ',';
+        //     })
+        //     id = id.substring(0,id.length-1); //substring() 截取字符串
+        //     return id
+        // }
     }
 })
 
@@ -121,5 +187,3 @@ var vm = new Vue({
     router, //挂载路由对象到VM实例
     store   //挂载store状态管理对象到VM实例
 })
-
-
